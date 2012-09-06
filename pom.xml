@@ -12,7 +12,7 @@
   <artifactId>coverartarchive-api</artifactId>
   <packaging>jar</packaging>
   <name>coverartarchive-api</name>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <description>Java bindings for the MusicBrainz Cover Art Archive</description>
   <url>https://github.com/lastfm/coverartarchive-api</url>
 
