@@ -19,7 +19,7 @@ Add the `coverartarchive-api` dependency:
 
 ## Usage example
 
-Get the front cover of Portishead's 'Dummy' release and save it to a file:
+Get all cover art for Portishead's 'Dummy' release:
 
     CoverArtArchiveClient client = new DefaultCoverArtArchiveClient();
     UUID mbid = UUID.fromString("76df3287-6cda-33eb-8e9a-044b5e15ffdd");
@@ -29,9 +29,8 @@ Get the front cover of Portishead's 'Dummy' release and save it to a file:
       coverArt = client.getByMbid(mbid);
       if (coverArt != null) {
         for (CoverArtImage coverArtImage : coverArt.getImages()) {
-          if (coverArtImage.isFront()) {
-            FileUtils.copyInputStreamToFile(coverArtImage.getImage(), new File("/tmp/front.jpg"));
-          }
+          File output = new File(mbid.toString() + "_" + coverArtImage.getId() + ".jpg");
+          FileUtils.copyInputStreamToFile(coverArtImage.getImage(), output);
         }
       }
     } catch (Exception e) {
