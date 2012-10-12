@@ -16,11 +16,13 @@
 package fm.last.musicbrainz.coverart.impl;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 
@@ -40,36 +42,54 @@ public class CoverArtBeanDecoratorTest {
 
   private static final String URL_RELEASE = "http://musicbrainz.org/release/123";
 
-  private CoverArtBean coverArtBean;
-
   @Mock
-  private CoverArtImageBean coverArtImageBean;
-
+  private CoverArtImageBean coverArtImageBeanA;
+  @Mock
+  private CoverArtImageBean coverArtImageBeanB;
   @Mock
   private DefaultCoverArtArchiveClient client;
 
+  private CoverArtBean coverArtBean;
+  private CoverArt coverArt;
+
   @Before
   public void initialise() {
-    List<CoverArtImageBean> images = Lists.newArrayList(coverArtImageBean);
+    when(coverArtImageBeanA.getId()).thenReturn(1L);
+    when(coverArtImageBeanB.getId()).thenReturn(2L);
+    List<CoverArtImageBean> images = Lists.newArrayList(coverArtImageBeanB, coverArtImageBeanA);
 
     coverArtBean = new CoverArtBean();
     coverArtBean.setRelease(URL_RELEASE);
     coverArtBean.setImages(images);
+
+    coverArt = new CoverArtBeanDecorator(coverArtBean, client);
   }
 
   @Test
   public void gettersDelegateToBean() {
-    CoverArt coverArt = new CoverArtBeanDecorator(coverArtBean, client);
     assertThat(coverArt.getMusicBrainzReleaseUrl(), is(coverArtBean.getRelease()));
   }
 
   @Test
   public void gettingImagesReturnsProxiedCoverArtImages() {
-    CoverArt coverArt = new CoverArtBeanDecorator(coverArtBean, client);
-    assertThat(coverArt.getImages(), hasSize(1));
-    CoverArtImage coverArtImage = coverArt.getImages().iterator().next();
+    assertThat(coverArt.getImages(), hasSize(2));
+    for (CoverArtImage coverArtImage : coverArt.getImages()) {
+      assertThat(coverArtImage, is(instanceOf(ProxiedCoverArtImageBeanDecorator.class)));
+      coverArtImage.getId();
+    }
+    verify(coverArtImageBeanA, times(1)).getId();
+    verify(coverArtImageBeanB, times(1)).getId();
+  }
+
+  @Test
+  public void gettingExistingImageByIdReturnsProxiedCoverArtImage() {
+    CoverArtImage coverArtImage = coverArt.getById(1);
+    assertThat(coverArtImage.getId(), is(1L));
     assertThat(coverArtImage, is(instanceOf(ProxiedCoverArtImageBeanDecorator.class)));
-    coverArtImage.getId();
-    verify(coverArtImageBean, times(1)).getId();
+  }
+
+  @Test
+  public void gettingNotExistingImageByIdReturnsNull() {
+    assertThat(coverArt.getById(1234), is(nullValue()));
   }
 }
