@@ -45,7 +45,11 @@ class CoverArtBeanDecorator implements CoverArt {
 
   @Override
   public CoverArtImage getById(long id) {
-    // TODO Auto-generated method stub
+    for (CoverArtImage coverArtImage : getProxiedCoverArtImages()) {
+      if (coverArtImage.getId() == id) {
+        return coverArtImage;
+      }
+    }
     return null;
   }
 
