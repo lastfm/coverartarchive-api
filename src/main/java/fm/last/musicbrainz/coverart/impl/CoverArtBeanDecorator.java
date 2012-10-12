@@ -16,6 +16,7 @@
 package fm.last.musicbrainz.coverart.impl;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Collections2;
@@ -36,7 +37,7 @@ class CoverArtBeanDecorator implements CoverArt {
   }
 
   @Override
-  public Set<CoverArtImage> getImages() {
+  public List<CoverArtImage> getImages() {
     return getProxiedCoverArtImages();
   }
 
