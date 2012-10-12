@@ -26,6 +26,7 @@ class CoverArtBeanDecorator implements CoverArt {
 
   private final CoverArtBean delegate;
   private final DefaultCoverArtArchiveClient client;
+  private final Set<CoverArtImage> images = Sets.newHashSet();
 
   public CoverArtBeanDecorator(CoverArtBean delegate, DefaultCoverArtArchiveClient client) {
     this.delegate = delegate;
@@ -34,16 +35,39 @@ class CoverArtBeanDecorator implements CoverArt {
 
   @Override
   public Set<CoverArtImage> getImages() {
-    Set<CoverArtImage> images = Sets.newHashSet();
-    for (CoverArtImageBean image : delegate.getImages()) {
-      images.add(new ProxiedCoverArtImageBeanDecorator(image, client));
-    }
-    return images;
+    return getProxiedCoverArtImages();
   }
 
   @Override
   public String getMusicBrainzReleaseUrl() {
     return delegate.getRelease();
+  }
+
+  @Override
+  public CoverArtImage getById(long id) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public CoverArtImage getFront() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public CoverArtImage getBack() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  private Set<CoverArtImage> getProxiedCoverArtImages() {
+    if (images.isEmpty()) {
+      for (CoverArtImageBean image : delegate.getImages()) {
+        images.add(new ProxiedCoverArtImageBeanDecorator(image, client));
+      }
+    }
+    return images;
   }
 
 }
