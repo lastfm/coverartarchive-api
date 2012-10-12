@@ -17,10 +17,9 @@ package fm.last.musicbrainz.coverart.impl;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 
 import fm.last.musicbrainz.coverart.CoverArt;
 import fm.last.musicbrainz.coverart.CoverArtImage;
@@ -29,7 +28,7 @@ class CoverArtBeanDecorator implements CoverArt {
 
   private final CoverArtBean delegate;
   private final DefaultCoverArtArchiveClient client;
-  private final Set<CoverArtImage> images = Sets.newHashSet();
+  private final List<CoverArtImage> images = Lists.newArrayList();
 
   public CoverArtBeanDecorator(CoverArtBean delegate, DefaultCoverArtArchiveClient client) {
     this.delegate = delegate;
@@ -61,7 +60,7 @@ class CoverArtBeanDecorator implements CoverArt {
     return getFirstImageOrNull(Collections2.filter(getProxiedCoverArtImages(), IsBackImage.INSTANCE));
   }
 
-  private Set<CoverArtImage> getProxiedCoverArtImages() {
+  private List<CoverArtImage> getProxiedCoverArtImages() {
     if (images.isEmpty()) {
       for (CoverArtImageBean image : delegate.getImages()) {
         images.add(new ProxiedCoverArtImageBeanDecorator(image, client));
