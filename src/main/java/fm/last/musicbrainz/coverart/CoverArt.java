@@ -25,4 +25,11 @@ public interface CoverArt {
   Set<CoverArtImage> getImages();
 
   String getMusicBrainzReleaseUrl();
+
+  CoverArtImage getById(long id);
+
+  CoverArtImage getFront();
+
+  CoverArtImage getBack();
+
 }
