@@ -44,7 +44,7 @@ class CoverArtBeanDecorator implements CoverArt {
   }
 
   @Override
-  public CoverArtImage getById(long id) {
+  public CoverArtImage getImageById(long id) {
     for (CoverArtImage coverArtImage : getProxiedCoverArtImages()) {
       if (coverArtImage.getId() == id) {
         return coverArtImage;
@@ -54,7 +54,7 @@ class CoverArtBeanDecorator implements CoverArt {
   }
 
   @Override
-  public CoverArtImage getFront() {
+  public CoverArtImage getFrontImage() {
     for (CoverArtImage coverArtImage : getProxiedCoverArtImages()) {
       if (coverArtImage.isFront()) {
         return coverArtImage;
@@ -64,7 +64,7 @@ class CoverArtBeanDecorator implements CoverArt {
   }
 
   @Override
-  public CoverArtImage getBack() {
+  public CoverArtImage getBackImage() {
     for (CoverArtImage coverArtImage : getProxiedCoverArtImages()) {
       if (coverArtImage.isBack()) {
         return coverArtImage;

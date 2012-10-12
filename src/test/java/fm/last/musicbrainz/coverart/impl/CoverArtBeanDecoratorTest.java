@@ -85,19 +85,19 @@ public class CoverArtBeanDecoratorTest {
 
   @Test
   public void gettingExistingImageByIdReturnsProxiedCoverArtImage() {
-    CoverArtImage coverArtImage = coverArt.getById(1);
+    CoverArtImage coverArtImage = coverArt.getImageById(1);
     assertThat(coverArtImage.getId(), is(1L));
     assertThat(coverArtImage, is(instanceOf(ProxiedCoverArtImageBeanDecorator.class)));
   }
 
   @Test
   public void gettingNotExistingImageByIdReturnsNull() {
-    assertThat(coverArt.getById(1234), is(nullValue()));
+    assertThat(coverArt.getImageById(1234), is(nullValue()));
   }
 
   @Test
   public void gettingExistingFrontImageReturnsProxiedCoverArtImage() {
-    CoverArtImage coverArtImage = coverArt.getFront();
+    CoverArtImage coverArtImage = coverArt.getFrontImage();
     assertThat(coverArtImage.getId(), is(2L));
     assertThat(coverArtImage, is(instanceOf(ProxiedCoverArtImageBeanDecorator.class)));
   }
@@ -105,12 +105,12 @@ public class CoverArtBeanDecoratorTest {
   @Test
   public void gettingNotExistingFrontImageReturnsNull() {
     when(coverArtImageBeanB.isFront()).thenReturn(false);
-    assertThat(coverArt.getFront(), is(nullValue()));
+    assertThat(coverArt.getFrontImage(), is(nullValue()));
   }
 
   @Test
   public void gettingExistingBackImageReturnsProxiedCoverArtImage() {
-    CoverArtImage coverArtImage = coverArt.getBack();
+    CoverArtImage coverArtImage = coverArt.getBackImage();
     assertThat(coverArtImage.getId(), is(1L));
     assertThat(coverArtImage, is(instanceOf(ProxiedCoverArtImageBeanDecorator.class)));
   }
@@ -118,6 +118,6 @@ public class CoverArtBeanDecoratorTest {
   @Test
   public void gettingNotExistingBackImageReturnsNull() {
     when(coverArtImageBeanA.isBack()).thenReturn(false);
-    assertThat(coverArt.getBack(), is(nullValue()));
+    assertThat(coverArt.getBackImage(), is(nullValue()));
   }
 }

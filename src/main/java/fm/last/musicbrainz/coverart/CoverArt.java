@@ -26,10 +26,10 @@ public interface CoverArt {
 
   String getMusicBrainzReleaseUrl();
 
-  CoverArtImage getById(long id);
+  CoverArtImage getImageById(long id);
 
-  CoverArtImage getFront();
+  CoverArtImage getFrontImage();
 
-  CoverArtImage getBack();
+  CoverArtImage getBackImage();
 
 }
