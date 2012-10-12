@@ -55,7 +55,7 @@ public class CoverArtBeanDecoratorTest {
   @Before
   public void initialise() {
     when(coverArtImageBeanA.getId()).thenReturn(1L);
-    when(coverArtImageBeanB.isBack()).thenReturn(true);
+    when(coverArtImageBeanA.isBack()).thenReturn(true);
     when(coverArtImageBeanB.getId()).thenReturn(2L);
     when(coverArtImageBeanB.isFront()).thenReturn(true);
     List<CoverArtImageBean> images = Lists.newArrayList(coverArtImageBeanB, coverArtImageBeanA);
