@@ -102,7 +102,7 @@ public class CoverArtBeanDecoratorTest {
   }
 
   @Test
-  public void gettingNotExistingFrontImageReturnsProxiedCoverArtImage() {
+  public void gettingNotExistingFrontImageReturnsNull() {
     when(coverArtImageBeanB.isFront()).thenReturn(false);
     assertThat(coverArt.getFront(), is(nullValue()));
   }
