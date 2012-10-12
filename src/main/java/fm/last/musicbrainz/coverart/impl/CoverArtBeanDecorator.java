@@ -55,7 +55,11 @@ class CoverArtBeanDecorator implements CoverArt {
 
   @Override
   public CoverArtImage getFront() {
-    // TODO Auto-generated method stub
+    for (CoverArtImage coverArtImage : getProxiedCoverArtImages()) {
+      if (coverArtImage.isFront()) {
+        return coverArtImage;
+      }
+    }
     return null;
   }
 
