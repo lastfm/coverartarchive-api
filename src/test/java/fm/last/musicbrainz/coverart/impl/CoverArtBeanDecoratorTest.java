@@ -73,8 +73,15 @@ public class CoverArtBeanDecoratorTest {
   }
 
   @Test
+  public void imagesAreOrdered() {
+    List<CoverArtImage> images = coverArt.getImages();
+    assertThat(images, hasSize(2));
+    assertThat(images.get(0).getId(), is(coverArtImageBeanB.getId()));
+    assertThat(images.get(1).getId(), is(coverArtImageBeanA.getId()));
+  }
+
+  @Test
   public void gettingImagesReturnsProxiedCoverArtImages() {
-    assertThat(coverArt.getImages(), hasSize(2));
     for (CoverArtImage coverArtImage : coverArt.getImages()) {
       assertThat(coverArtImage, is(instanceOf(ProxiedCoverArtImageBeanDecorator.class)));
       coverArtImage.getId();

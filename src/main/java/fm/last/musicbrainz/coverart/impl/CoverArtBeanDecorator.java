@@ -16,10 +16,11 @@
 package fm.last.musicbrainz.coverart.impl;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 
 import fm.last.musicbrainz.coverart.CoverArt;
 import fm.last.musicbrainz.coverart.CoverArtImage;
@@ -28,7 +29,7 @@ class CoverArtBeanDecorator implements CoverArt {
 
   private final CoverArtBean delegate;
   private final DefaultCoverArtArchiveClient client;
-  private final Set<CoverArtImage> images = Sets.newHashSet();
+  private final List<CoverArtImage> coverArtImages = Lists.newArrayList();
 
   public CoverArtBeanDecorator(CoverArtBean delegate, DefaultCoverArtArchiveClient client) {
     this.delegate = delegate;
@@ -36,7 +37,7 @@ class CoverArtBeanDecorator implements CoverArt {
   }
 
   @Override
-  public Set<CoverArtImage> getImages() {
+  public List<CoverArtImage> getImages() {
     return getProxiedCoverArtImages();
   }
 
@@ -47,33 +48,34 @@ class CoverArtBeanDecorator implements CoverArt {
 
   @Override
   public CoverArtImage getImageById(long id) {
-    return getFirstImageOrNull(Collections2.filter(getProxiedCoverArtImages(), new IsImageWithId(id)));
+    return getImageOrNull(new IsImageWithId(id));
   }
 
   @Override
   public CoverArtImage getFrontImage() {
-    return getFirstImageOrNull(Collections2.filter(getProxiedCoverArtImages(), IsFrontImage.INSTANCE));
+    return getImageOrNull(IsFrontImage.INSTANCE);
   }
 
   @Override
   public CoverArtImage getBackImage() {
-    return getFirstImageOrNull(Collections2.filter(getProxiedCoverArtImages(), IsBackImage.INSTANCE));
+    return getImageOrNull(IsBackImage.INSTANCE);
   }
 
-  private Set<CoverArtImage> getProxiedCoverArtImages() {
-    if (images.isEmpty()) {
-      for (CoverArtImageBean image : delegate.getImages()) {
-        images.add(new ProxiedCoverArtImageBeanDecorator(image, client));
-      }
-    }
-    return images;
-  }
-
-  private CoverArtImage getFirstImageOrNull(Collection<CoverArtImage> coverArtImages) {
-    if (coverArtImages.isEmpty()) {
+  private CoverArtImage getImageOrNull(Predicate<CoverArtImage> filter) {
+    Collection<CoverArtImage> filtered = Collections2.filter(getProxiedCoverArtImages(), filter);
+    if (filtered.isEmpty()) {
       return null;
     }
-    return coverArtImages.iterator().next();
+    return filtered.iterator().next();
+  }
+
+  private List<CoverArtImage> getProxiedCoverArtImages() {
+    if (coverArtImages.isEmpty()) {
+      for (CoverArtImageBean image : delegate.getImages()) {
+        coverArtImages.add(new ProxiedCoverArtImageBeanDecorator(image, client));
+      }
+    }
+    return coverArtImages;
   }
 
 }

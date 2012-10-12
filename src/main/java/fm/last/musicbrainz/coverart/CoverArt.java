@@ -15,14 +15,14 @@
  */
 package fm.last.musicbrainz.coverart;
 
-import java.util.Set;
+import java.util.List;
 
 public interface CoverArt {
 
   /**
    * @return Empty set when no {@link CoverArtImage}s exist.
    */
-  Set<CoverArtImage> getImages();
+  List<CoverArtImage> getImages();
 
   String getMusicBrainzReleaseUrl();
 
