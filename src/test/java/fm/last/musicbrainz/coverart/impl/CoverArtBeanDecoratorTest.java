@@ -55,6 +55,7 @@ public class CoverArtBeanDecoratorTest {
   @Before
   public void initialise() {
     when(coverArtImageBeanA.getId()).thenReturn(1L);
+    when(coverArtImageBeanB.isBack()).thenReturn(true);
     when(coverArtImageBeanB.getId()).thenReturn(2L);
     when(coverArtImageBeanB.isFront()).thenReturn(true);
     List<CoverArtImageBean> images = Lists.newArrayList(coverArtImageBeanB, coverArtImageBeanA);
@@ -105,5 +106,18 @@ public class CoverArtBeanDecoratorTest {
   public void gettingNotExistingFrontImageReturnsNull() {
     when(coverArtImageBeanB.isFront()).thenReturn(false);
     assertThat(coverArt.getFront(), is(nullValue()));
+  }
+
+  @Test
+  public void gettingExistingBackImageReturnsProxiedCoverArtImage() {
+    CoverArtImage coverArtImage = coverArt.getBack();
+    assertThat(coverArtImage.getId(), is(1L));
+    assertThat(coverArtImage, is(instanceOf(ProxiedCoverArtImageBeanDecorator.class)));
+  }
+
+  @Test
+  public void gettingNotExistingBackImageReturnsNull() {
+    when(coverArtImageBeanA.isBack()).thenReturn(false);
+    assertThat(coverArt.getBack(), is(nullValue()));
   }
 }
