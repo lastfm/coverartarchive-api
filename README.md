@@ -9,13 +9,15 @@ Java data bindings for the [Cover Art Archive](http://coverartarchive.org/).
 
 ## Configuration
 
-Add the `coverartarchive-api` dependency:
+The recommended way of using `coverartarchive-api` is through Maven. Add the `coverartarchive-api` dependency to your project's POM:
 
     <dependency>
       <groupId>fm.last</groupId>
       <artifactId>coverartarchive-api</artifactId>
-      <version>1.0.0</version>
+      <version>2.0.0</version>
     </dependency>
+
+(Alternatively, a JAR file can be obtained from Maven Central: [fm.last:coverartarchive-api:2.0.0](http://search.maven.org/#artifactdetails%7Cfm.last%7Ccoverartarchive-api%7C2.0.0%7Cjar))
 
 ## Usage example
 

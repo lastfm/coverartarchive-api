@@ -26,10 +26,19 @@ public interface CoverArt {
 
   String getMusicBrainzReleaseUrl();
 
+  /**
+   * @return Null when no image with {@code id} exists.
+   */
   CoverArtImage getImageById(long id);
 
+  /**
+   * @return Null when the community have not chosen an image to represent the front of a release.
+   */
   CoverArtImage getFrontImage();
 
+  /**
+   * @return Null when the community have not chosen an image to represent the back of a release.
+   */
   CoverArtImage getBackImage();
 
 }
