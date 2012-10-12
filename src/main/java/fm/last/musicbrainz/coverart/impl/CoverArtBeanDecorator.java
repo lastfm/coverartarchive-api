@@ -15,8 +15,10 @@
  */
 package fm.last.musicbrainz.coverart.impl;
 
+import java.util.Collection;
 import java.util.Set;
 
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 
 import fm.last.musicbrainz.coverart.CoverArt;
@@ -26,6 +28,7 @@ class CoverArtBeanDecorator implements CoverArt {
 
   private final CoverArtBean delegate;
   private final DefaultCoverArtArchiveClient client;
+  private final Set<CoverArtImage> images = Sets.newHashSet();
 
   public CoverArtBeanDecorator(CoverArtBean delegate, DefaultCoverArtArchiveClient client) {
     this.delegate = delegate;
@@ -34,16 +37,43 @@ class CoverArtBeanDecorator implements CoverArt {
 
   @Override
   public Set<CoverArtImage> getImages() {
-    Set<CoverArtImage> images = Sets.newHashSet();
-    for (CoverArtImageBean image : delegate.getImages()) {
-      images.add(new ProxiedCoverArtImageBeanDecorator(image, client));
-    }
-    return images;
+    return getProxiedCoverArtImages();
   }
 
   @Override
   public String getMusicBrainzReleaseUrl() {
     return delegate.getRelease();
+  }
+
+  @Override
+  public CoverArtImage getImageById(long id) {
+    return getFirstImageOrNull(Collections2.filter(getProxiedCoverArtImages(), new IsImageWithId(id)));
+  }
+
+  @Override
+  public CoverArtImage getFrontImage() {
+    return getFirstImageOrNull(Collections2.filter(getProxiedCoverArtImages(), IsFrontImage.INSTANCE));
+  }
+
+  @Override
+  public CoverArtImage getBackImage() {
+    return getFirstImageOrNull(Collections2.filter(getProxiedCoverArtImages(), IsBackImage.INSTANCE));
+  }
+
+  private Set<CoverArtImage> getProxiedCoverArtImages() {
+    if (images.isEmpty()) {
+      for (CoverArtImageBean image : delegate.getImages()) {
+        images.add(new ProxiedCoverArtImageBeanDecorator(image, client));
+      }
+    }
+    return images;
+  }
+
+  private CoverArtImage getFirstImageOrNull(Collection<CoverArtImage> coverArtImages) {
+    if (coverArtImages.isEmpty()) {
+      return null;
+    }
+    return coverArtImages.iterator().next();
   }
 
 }
