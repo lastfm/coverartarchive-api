@@ -15,8 +15,10 @@
  */
 package fm.last.musicbrainz.coverart.impl;
 
+import java.util.Collection;
 import java.util.Set;
 
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 
 import fm.last.musicbrainz.coverart.CoverArt;
@@ -45,32 +47,17 @@ class CoverArtBeanDecorator implements CoverArt {
 
   @Override
   public CoverArtImage getImageById(long id) {
-    for (CoverArtImage coverArtImage : getProxiedCoverArtImages()) {
-      if (coverArtImage.getId() == id) {
-        return coverArtImage;
-      }
-    }
-    return null;
+    return getFirstImageOrNull(Collections2.filter(getProxiedCoverArtImages(), new IsImageWithId(id)));
   }
 
   @Override
   public CoverArtImage getFrontImage() {
-    for (CoverArtImage coverArtImage : getProxiedCoverArtImages()) {
-      if (coverArtImage.isFront()) {
-        return coverArtImage;
-      }
-    }
-    return null;
+    return getFirstImageOrNull(Collections2.filter(getProxiedCoverArtImages(), IsFrontImage.INSTANCE));
   }
 
   @Override
   public CoverArtImage getBackImage() {
-    for (CoverArtImage coverArtImage : getProxiedCoverArtImages()) {
-      if (coverArtImage.isBack()) {
-        return coverArtImage;
-      }
-    }
-    return null;
+    return getFirstImageOrNull(Collections2.filter(getProxiedCoverArtImages(), IsBackImage.INSTANCE));
   }
 
   private Set<CoverArtImage> getProxiedCoverArtImages() {
@@ -80,6 +67,13 @@ class CoverArtBeanDecorator implements CoverArt {
       }
     }
     return images;
+  }
+
+  private CoverArtImage getFirstImageOrNull(Collection<CoverArtImage> coverArtImages) {
+    if (coverArtImages.isEmpty()) {
+      return null;
+    }
+    return coverArtImages.iterator().next();
   }
 
 }
