@@ -1,4 +1,5 @@
 TBA
+- Migrated project to lastfm-oss-parent.
 
 2.0.0 (2012-10-12)
 - Added new methods to CoverArt (getImageById, getFrontImage and getBackImage).
