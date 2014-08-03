@@ -25,8 +25,20 @@ import java.util.UUID;
 public interface CoverArtArchiveClient {
 
   /**
+   * Finds cover art of a MusicBrainz release.
+   * 
+   * @param mbid the MusicBrainz ID of the release
    * @return Returns null when no cover art exists for the given {@code mbid}.
    * @throws CoverArtException when {@code mbid} is not a valid UUID or the Cover Art Archive could not be accessed.
    */
   CoverArt getByMbid(UUID mbid) throws CoverArtException;
+
+  /**
+   * Finds cover art of a MusicBrainz release group.
+   * 
+   * @param mbid the MusicBrainz ID of the release group
+   * @return Returns null when no cover art exists for the given {@code mbid}.
+   * @throws CoverArtException when {@code mbid} is not a valid UUID or the Cover Art Archive could not be accessed.
+   */
+  CoverArt getReleaseGroupByMbid(UUID mbid) throws CoverArtException;
 }

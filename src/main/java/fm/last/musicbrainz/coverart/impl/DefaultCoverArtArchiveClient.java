@@ -34,7 +34,7 @@ public class DefaultCoverArtArchiveClient implements CoverArtArchiveClient {
 
   private static final Logger log = LoggerFactory.getLogger(DefaultCoverArtArchiveClient.class);
 
-  private static final String API_ROOT = "http://coverartarchive.org/release/";
+  private static final String API_ROOT = "http://coverartarchive.org/";
 
   private final HttpClient client;
   private final ProxiedCoverArtFactory factory = new ProxiedCoverArtFactory(this);
@@ -53,8 +53,17 @@ public class DefaultCoverArtArchiveClient implements CoverArtArchiveClient {
 
   @Override
   public CoverArt getByMbid(UUID mbid) throws CoverArtException {
+    return getByMbid(CoverArtArchiveEntity.RELEASE, mbid);
+  }
+
+  @Override
+  public CoverArt getReleaseGroupByMbid(UUID mbid) throws CoverArtException {
+    return getByMbid(CoverArtArchiveEntity.RELEASE_GROUP, mbid);
+  }
+
+  private CoverArt getByMbid(CoverArtArchiveEntity entity, UUID mbid) {
     log.info("mbid={}", mbid);
-    HttpGet getRequest = getJsonGetRequest(mbid);
+    HttpGet getRequest = getJsonGetRequest(entity, mbid);
     CoverArt coverArt = null;
     try {
       String json = client.execute(getRequest, fetchJsonListingHandler);
@@ -77,10 +86,40 @@ public class DefaultCoverArtArchiveClient implements CoverArtArchiveClient {
     return getRequest;
   }
 
-  private HttpGet getJsonGetRequest(UUID mbid) {
-    String url = API_ROOT + mbid;
+  private HttpGet getJsonGetRequest(CoverArtArchiveEntity entity, UUID mbid) {
+    String url = API_ROOT + entity.getUrlParam() + mbid;
     HttpGet getRequest = new HttpGet(url);
     getRequest.addHeader("accept", "application/json");
     return getRequest;
+  }
+
+  /**
+   * The entity (vocabulary of MusicBrainz) a cover art belongs to.
+   * 
+   * @author schnatterer
+   */
+  private static enum CoverArtArchiveEntity {
+
+    /** The basic entity that has a cover art. */
+    RELEASE("release/"),
+    /**
+     * A group of releases (where each can have its own art). A release group does not have its own cover art but Cover
+     * Art Archive maps one of the releases' cover art to the release group.
+     */
+    RELEASE_GROUP("release-group/");
+
+    /** The API URL parameter that is used for querying this entity. */
+    private String urlParam;
+
+    private CoverArtArchiveEntity(String urlParam) {
+      this.urlParam = urlParam;
+    }
+
+    /**
+     * @return the API URL parameter that is used for querying this entity
+     */
+    public String getUrlParam() {
+      return urlParam;
+    }
   }
 }

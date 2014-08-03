@@ -47,6 +47,7 @@ import fm.last.musicbrainz.coverart.CoverArtException;
 public class DefaultCoverArtArchiveClientTest {
 
   private static final String API_ROOT = "http://coverartarchive.org/release/";
+  private static final String API_ROOT_RELEASEGROUP = "http://coverartarchive.org/release-group/";
   private static final UUID MBID = UUID.fromString("2ba4396d-c0be-4a56-b4ea-0438306eb3be");
 
   @Mock
@@ -82,7 +83,7 @@ public class DefaultCoverArtArchiveClientTest {
   public void nullMbidThrowsCoverArtException() throws Exception {
     doThrow(new HttpResponseException(HttpStatus.SC_BAD_REQUEST, "")).when(httpClient).execute(any(HttpGet.class),
         eq(FetchJsonListingResponseHandler.INSTANCE));
-    CoverArt coverArt = client.getByMbid(null);
+    client.getByMbid(null);
   }
 
   @Test
@@ -100,7 +101,30 @@ public class DefaultCoverArtArchiveClientTest {
   public void nonExistantImageThrowsIoException() throws Exception {
     doThrow(new HttpResponseException(HttpStatus.SC_NOT_FOUND, "")).when(httpClient).execute(any(HttpGet.class),
         eq(FetchImageDataResponseHandler.INSTANCE));
-    InputStream data = client.getImageData("doesnotexist.jpg");
+    client.getImageData("doesnotexist.jpg");
   }
 
+  @Test
+  public void releaseGroupMbidWithCoverArtReturnsCoverArt() throws Exception {
+    when(httpClient.execute(httpGetCaptor.capture(), eq(FetchJsonListingResponseHandler.INSTANCE))).thenReturn("{}");
+    CoverArt coverArt = client.getReleaseGroupByMbid(MBID);
+    assertThat(coverArt, is(not(nullValue())));
+    HttpGet httpGet = httpGetCaptor.getValue();
+    assertThat(httpGet.getURI().toString(), is(API_ROOT_RELEASEGROUP + MBID));
+    assertThat(httpGet.getHeaders("accept")[0].toString(), is("accept: application/json"));
+  }
+
+  @Test
+  public void releaseGroupMbidWithoutCoverArtReturnsNull() throws Exception {
+    when(httpClient.execute(any(HttpGet.class), eq(FetchJsonListingResponseHandler.INSTANCE))).thenReturn(null);
+    CoverArt coverArt = client.getReleaseGroupByMbid(MBID);
+    assertThat(coverArt, is(nullValue()));
+  }
+
+  @Test(expected = CoverArtException.class)
+  public void releaseGroupNullMbidThrowsCoverArtException() throws Exception {
+    doThrow(new HttpResponseException(HttpStatus.SC_BAD_REQUEST, "")).when(httpClient).execute(any(HttpGet.class),
+        eq(FetchJsonListingResponseHandler.INSTANCE));
+    client.getReleaseGroupByMbid(null);
+  }
 }
