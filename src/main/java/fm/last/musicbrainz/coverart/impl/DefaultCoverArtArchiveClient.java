@@ -34,7 +34,9 @@ public class DefaultCoverArtArchiveClient implements CoverArtArchiveClient {
 
   private static final Logger log = LoggerFactory.getLogger(DefaultCoverArtArchiveClient.class);
 
-  private static final String API_ROOT = "http://coverartarchive.org/";
+  private static final String API_DOMAIN = "coverartarchive.org/";
+  private static final String API_ROOT = "http://" + API_DOMAIN;
+  private static final String API_ROOT_HTTPS = "https://" + API_DOMAIN;
 
   private final HttpClient client;
   private final ProxiedCoverArtFactory factory = new ProxiedCoverArtFactory(this);
@@ -42,13 +44,16 @@ public class DefaultCoverArtArchiveClient implements CoverArtArchiveClient {
   private final ResponseHandler<String> fetchJsonListingHandler = FetchJsonListingResponseHandler.INSTANCE;
   private final ResponseHandler<InputStream> fetchImageDataHandler = FetchImageDataResponseHandler.INSTANCE;
 
+  private boolean isUsingHttps;
+
   public DefaultCoverArtArchiveClient() {
-    client = new DefaultHttpClient();
+    // Only use HTTPS if explicitly requested
+    this(false);
   }
 
-  /** ONLY FOR TESTING **/
-  DefaultCoverArtArchiveClient(HttpClient client) {
-    this.client = client;
+  public DefaultCoverArtArchiveClient(boolean isUsingHttps) {
+    client = new DefaultHttpClient();
+    this.isUsingHttps = isUsingHttps;
   }
 
   @Override
@@ -87,7 +92,13 @@ public class DefaultCoverArtArchiveClient implements CoverArtArchiveClient {
   }
 
   private HttpGet getJsonGetRequest(CoverArtArchiveEntity entity, UUID mbid) {
-    String url = API_ROOT + entity.getUrlParam() + mbid;
+    String url;
+    if (isUsingHttps) {
+      url = API_ROOT_HTTPS;
+    } else {
+      url = API_ROOT;
+    }
+    url += entity.getUrlParam() + mbid;
     HttpGet getRequest = new HttpGet(url);
     getRequest.addHeader("accept", "application/json");
     return getRequest;
