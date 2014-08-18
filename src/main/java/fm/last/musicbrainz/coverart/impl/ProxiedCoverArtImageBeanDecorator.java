@@ -58,6 +58,11 @@ class ProxiedCoverArtImageBeanDecorator implements CoverArtImage {
   }
 
   @Override
+  public String getImageUrl() {
+    return delegate.getImage();
+  }
+
+  @Override
   public boolean isFront() {
     return delegate.isFront();
   }
@@ -83,8 +88,18 @@ class ProxiedCoverArtImageBeanDecorator implements CoverArtImage {
   }
 
   @Override
+  public String getLargeThumbnailUrl() {
+    return delegate.getThumbnails().getLarge();
+  }
+
+  @Override
   public InputStream getSmallThumbnail() throws IOException {
     return client.getImageData(delegate.getThumbnails().getSmall());
+  }
+
+  @Override
+  public String getSmallThumbnailUrl() {
+    return delegate.getThumbnails().getSmall();
   }
 
   @Override

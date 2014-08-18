@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import fm.last.musicbrainz.coverart.CoverArt;
 import fm.last.musicbrainz.coverart.CoverArtArchiveClient;
 import fm.last.musicbrainz.coverart.CoverArtException;
+import fm.last.musicbrainz.coverart.CoverArtImage;
 
 public class DefaultCoverArtArchiveClient implements CoverArtArchiveClient {
 
@@ -51,9 +52,17 @@ public class DefaultCoverArtArchiveClient implements CoverArtArchiveClient {
     this(false);
   }
 
+  /**
+   * Creates a client that explicitly communicates with or without secure HTTP.
+   * 
+   * @param isUsingHttps <code>true</code> uses HTTPS to connect to coverartarchive. <br/>
+   *          <i>Note:</i> this only applies to communication with coverartarchive.org. They might return plain HTTP
+   *          links to image files. You might want to handle this yourself using {@link CoverArtImage}.
+   *          <code>getXYZUrl()</code> methods, such as {@link CoverArtImage#getImageUrl()}.
+   */
   public DefaultCoverArtArchiveClient(boolean isUsingHttps) {
-    client = new DefaultHttpClient();
-    this.isUsingHttps = isUsingHttps;
+	    client = new DefaultHttpClient();
+	    this.isUsingHttps = isUsingHttps;
   }
 
   @Override
