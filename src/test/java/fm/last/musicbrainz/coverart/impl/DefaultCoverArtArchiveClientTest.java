@@ -32,7 +32,9 @@ import java.util.UUID;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +63,7 @@ public class DefaultCoverArtArchiveClientTest {
   @Before
   public void initialise() {
     httpGetCaptor = ArgumentCaptor.forClass(HttpGet.class);
+    // Use default constructor. Specific constructors are tested later on
     client = new DefaultCoverArtArchiveClient();
     TestUtil.setFinalField(client, "client", httpClient);
   }
@@ -141,6 +144,14 @@ public class DefaultCoverArtArchiveClientTest {
     TestUtil.setFinalField(client, "client", httpClient);
 
     mbidWithCoverArtReturnsCoverArt(API_ROOT_HTTPS);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test(expected = CoverArtException.class)
+  public void customClient() throws Exception {
+    HttpClient customHttpClient = mock(HttpClient.class);
+    when(customHttpClient.execute(any(HttpUriRequest.class), any(ResponseHandler.class))).thenThrow(new IOException());
+    new DefaultCoverArtArchiveClient(false, customHttpClient).getByMbid(MBID);
   }
 
   private void mbidWithCoverArtReturnsCoverArt(String exepctedApiRoot) throws Exception {

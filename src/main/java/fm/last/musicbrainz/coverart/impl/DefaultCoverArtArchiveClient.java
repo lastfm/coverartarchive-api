@@ -61,8 +61,26 @@ public class DefaultCoverArtArchiveClient implements CoverArtArchiveClient {
    *          <code>getXYZUrl()</code> methods, such as {@link CoverArtImage#getImageUrl()}.
    */
   public DefaultCoverArtArchiveClient(boolean isUsingHttps) {
-	    client = new DefaultHttpClient();
-	    this.isUsingHttps = isUsingHttps;
+    this(isUsingHttps, null);
+  }
+
+  /**
+   * Allows for using a custom HTTP client. This might be necessary when the default client used here does not suit the
+   * needs. For example to replace the outdated version shipped with android.
+   * 
+   * @param isUsingHttps <code>true</code> uses HTTPS to connect to coverartarchive. <br/>
+   *          <i>Note:</i> this only applies to communication with coverartarchive.org. They might return plain HTTP
+   *          links to image files. You might want to handle this yourself using {@link CoverArtImage}.
+   *          <code>getXYZUrl()</code> methods, such as {@link CoverArtImage#getImageUrl()}.
+   * @param client custom client. <code>null</code> results in using the default client
+   */
+  public DefaultCoverArtArchiveClient(boolean isUsingHttps, HttpClient client) {
+    if (client == null) {
+      this.client = new DefaultHttpClient();
+    } else {
+      this.client = client;
+    }
+    this.isUsingHttps = isUsingHttps;
   }
 
   @Override

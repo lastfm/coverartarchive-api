@@ -25,6 +25,8 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.util.EntityUtils;
 
+import fm.last.musicbrainz.coverart.util.HttpUtil;
+
 enum FetchJsonListingResponseHandler implements ResponseHandler<String> {
   /* */
   INSTANCE;
@@ -39,7 +41,7 @@ enum FetchJsonListingResponseHandler implements ResponseHandler<String> {
     } else if (statusLine.getStatusCode() == HttpStatus.SC_NOT_FOUND) {
       return null;
     }
-    EntityUtils.consume(entity);
+    HttpUtil.consumeEntity(entity);
     throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
   }
 }
