@@ -50,9 +50,12 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <version>4.2.1</version>
-      <!--Similar to the version used in android. Alpha 4.0-alpha4 does not contain ResponseHandler yet, which is included in android.-->
+      <!--
+      If modifying this library for Android, you should develop against the version below.
+      The Android version was actually forked pre-beta,
+      but the last alpha "4.0-alpha4" does not contain ResponseHandler yet, which is included in android.
+      -->
       <!-- <version>4.0-beta1</version> -->
-     
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
