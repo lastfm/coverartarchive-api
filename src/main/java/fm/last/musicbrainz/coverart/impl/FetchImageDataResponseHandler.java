@@ -25,7 +25,8 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.util.EntityUtils;
+
+import fm.last.musicbrainz.coverart.util.HttpUtil;
 
 enum FetchImageDataResponseHandler implements ResponseHandler<InputStream> {
   /* */
@@ -40,7 +41,7 @@ enum FetchImageDataResponseHandler implements ResponseHandler<InputStream> {
       InputStream content = entity.getContent();
       return IOUtils.toBufferedInputStream(content);
     }
-    EntityUtils.consume(entity);
+    HttpUtil.consumeEntity(entity);
     throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
   }
 

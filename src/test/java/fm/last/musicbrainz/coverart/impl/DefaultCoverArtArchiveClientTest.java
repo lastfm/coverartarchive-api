@@ -32,7 +32,9 @@ import java.util.UUID;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,11 +44,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import fm.last.musicbrainz.coverart.CoverArt;
 import fm.last.musicbrainz.coverart.CoverArtException;
+import fm.last.musicbrainz.coverart.impl.util.TestUtil;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultCoverArtArchiveClientTest {
 
   private static final String API_ROOT = "http://coverartarchive.org/release/";
+  private static final String API_ROOT_HTTPS = "https://coverartarchive.org/release/";
+  private static final String API_ROOT_RELEASEGROUP = "http://coverartarchive.org/release-group/";
   private static final UUID MBID = UUID.fromString("2ba4396d-c0be-4a56-b4ea-0438306eb3be");
 
   @Mock
@@ -58,17 +63,14 @@ public class DefaultCoverArtArchiveClientTest {
   @Before
   public void initialise() {
     httpGetCaptor = ArgumentCaptor.forClass(HttpGet.class);
-    client = new DefaultCoverArtArchiveClient(httpClient);
+    // Use default constructor. Specific constructors are tested later on
+    client = new DefaultCoverArtArchiveClient();
+    TestUtil.setFinalField(client, "client", httpClient);
   }
 
   @Test
   public void mbidWithCoverArtReturnsCoverArt() throws Exception {
-    when(httpClient.execute(httpGetCaptor.capture(), eq(FetchJsonListingResponseHandler.INSTANCE))).thenReturn("{}");
-    CoverArt coverArt = client.getByMbid(MBID);
-    assertThat(coverArt, is(not(nullValue())));
-    HttpGet httpGet = httpGetCaptor.getValue();
-    assertThat(httpGet.getURI().toString(), is(API_ROOT + MBID));
-    assertThat(httpGet.getHeaders("accept")[0].toString(), is("accept: application/json"));
+    mbidWithCoverArtReturnsCoverArt(API_ROOT);
   }
 
   @Test
@@ -82,7 +84,7 @@ public class DefaultCoverArtArchiveClientTest {
   public void nullMbidThrowsCoverArtException() throws Exception {
     doThrow(new HttpResponseException(HttpStatus.SC_BAD_REQUEST, "")).when(httpClient).execute(any(HttpGet.class),
         eq(FetchJsonListingResponseHandler.INSTANCE));
-    CoverArt coverArt = client.getByMbid(null);
+    client.getByMbid(null);
   }
 
   @Test
@@ -100,7 +102,65 @@ public class DefaultCoverArtArchiveClientTest {
   public void nonExistantImageThrowsIoException() throws Exception {
     doThrow(new HttpResponseException(HttpStatus.SC_NOT_FOUND, "")).when(httpClient).execute(any(HttpGet.class),
         eq(FetchImageDataResponseHandler.INSTANCE));
-    InputStream data = client.getImageData("doesnotexist.jpg");
+    client.getImageData("doesnotexist.jpg");
+  }
+
+  @Test
+  public void releaseGroupMbidWithCoverArtReturnsCoverArt() throws Exception {
+    when(httpClient.execute(httpGetCaptor.capture(), eq(FetchJsonListingResponseHandler.INSTANCE))).thenReturn("{}");
+    CoverArt coverArt = client.getReleaseGroupByMbid(MBID);
+    assertThat(coverArt, is(not(nullValue())));
+    HttpGet httpGet = httpGetCaptor.getValue();
+    assertThat(httpGet.getURI().toString(), is(API_ROOT_RELEASEGROUP + MBID));
+    assertThat(httpGet.getHeaders("accept")[0].toString(), is("accept: application/json"));
+  }
+
+  @Test
+  public void releaseGroupMbidWithoutCoverArtReturnsNull() throws Exception {
+    when(httpClient.execute(any(HttpGet.class), eq(FetchJsonListingResponseHandler.INSTANCE))).thenReturn(null);
+    CoverArt coverArt = client.getReleaseGroupByMbid(MBID);
+    assertThat(coverArt, is(nullValue()));
+  }
+
+  @Test(expected = CoverArtException.class)
+  public void releaseGroupNullMbidThrowsCoverArtException() throws Exception {
+    doThrow(new HttpResponseException(HttpStatus.SC_BAD_REQUEST, "")).when(httpClient).execute(any(HttpGet.class),
+        eq(FetchJsonListingResponseHandler.INSTANCE));
+    client.getReleaseGroupByMbid(null);
+  }
+
+  @Test
+  public void doNotUseHttps() throws Exception {
+    client = new DefaultCoverArtArchiveClient(false);
+    TestUtil.setFinalField(client, "client", httpClient);
+
+    // Expect default behavior
+    mbidWithCoverArtReturnsCoverArt();
+  }
+
+  @Test
+  public void useHttps() throws Exception {
+    client = new DefaultCoverArtArchiveClient(true);
+    TestUtil.setFinalField(client, "client", httpClient);
+
+    mbidWithCoverArtReturnsCoverArt(API_ROOT_HTTPS);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test(expected = CoverArtException.class)
+  public void customClient() throws Exception {
+    HttpClient customHttpClient = mock(HttpClient.class);
+    when(customHttpClient.execute(any(HttpUriRequest.class), any(ResponseHandler.class))).thenThrow(new IOException());
+    new DefaultCoverArtArchiveClient(false, customHttpClient).getByMbid(MBID);
+  }
+
+  private void mbidWithCoverArtReturnsCoverArt(String exepctedApiRoot) throws Exception {
+    when(httpClient.execute(httpGetCaptor.capture(), eq(FetchJsonListingResponseHandler.INSTANCE))).thenReturn("{}");
+    CoverArt coverArt = client.getByMbid(MBID);
+    assertThat(coverArt, is(not(nullValue())));
+    HttpGet httpGet = httpGetCaptor.getValue();
+    assertThat(httpGet.getURI().toString(), is(exepctedApiRoot + MBID));
+    assertThat(httpGet.getHeaders("accept")[0].toString(), is("accept: application/json"));
   }
 
 }

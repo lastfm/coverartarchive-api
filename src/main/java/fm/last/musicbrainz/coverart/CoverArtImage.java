@@ -50,4 +50,10 @@ public interface CoverArtImage {
    */
   InputStream getSmallThumbnail() throws IOException;
 
+  String getImageUrl();
+
+  String getLargeThumbnailUrl();
+
+  String getSmallThumbnailUrl();
+
 }
