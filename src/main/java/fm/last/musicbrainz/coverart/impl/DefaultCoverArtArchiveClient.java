@@ -45,42 +45,49 @@ public class DefaultCoverArtArchiveClient implements CoverArtArchiveClient {
   private final ResponseHandler<String> fetchJsonListingHandler = FetchJsonListingResponseHandler.INSTANCE;
   private final ResponseHandler<InputStream> fetchImageDataHandler = FetchImageDataResponseHandler.INSTANCE;
 
-  private boolean isUsingHttps;
+  private boolean useHttps;
 
+  /**
+   * Creates a client that communicates using (unsecured) HTTP.
+   * To use HTTPS, see the other constructors.
+   */
   public DefaultCoverArtArchiveClient() {
-    // Only use HTTPS if explicitly requested
     this(false);
   }
 
   /**
    * Creates a client that explicitly communicates with or without secure HTTP.
    * 
-   * @param isUsingHttps <code>true</code> uses HTTPS to connect to coverartarchive. <br/>
+   * @param useHttps <code>true</code> to use HTTPS to connect to coverartarchive.<br/>
    *          <i>Note:</i> this only applies to communication with coverartarchive.org. They might return plain HTTP
    *          links to image files. You might want to handle this yourself using {@link CoverArtImage}.
    *          <code>getXYZUrl()</code> methods, such as {@link CoverArtImage#getImageUrl()}.
    */
-  public DefaultCoverArtArchiveClient(boolean isUsingHttps) {
-    this(isUsingHttps, null);
+  public DefaultCoverArtArchiveClient(boolean useHttps) {
+    this(useHttps, null);
   }
 
   /**
    * Allows for using a custom HTTP client. This might be necessary when the default client used here does not suit the
    * needs. For example to replace the outdated version shipped with android.
    * 
-   * @param isUsingHttps <code>true</code> uses HTTPS to connect to coverartarchive. <br/>
+   * @param useHttps <code>true</code> uses HTTPS to connect to coverartarchive. <br/>
    *          <i>Note:</i> this only applies to communication with coverartarchive.org. They might return plain HTTP
    *          links to image files. You might want to handle this yourself using {@link CoverArtImage}.
    *          <code>getXYZUrl()</code> methods, such as {@link CoverArtImage#getImageUrl()}.
    * @param client custom client. <code>null</code> results in using the default client
    */
-  public DefaultCoverArtArchiveClient(boolean isUsingHttps, HttpClient client) {
+  public DefaultCoverArtArchiveClient(boolean useHttps, HttpClient client) {
     if (client == null) {
       this.client = new DefaultHttpClient();
     } else {
       this.client = client;
     }
-    this.isUsingHttps = isUsingHttps;
+    this.useHttps = useHttps;
+  }
+
+  public boolean isUsingHttps() {
+    return useHttps;
   }
 
   @Override
@@ -120,7 +127,7 @@ public class DefaultCoverArtArchiveClient implements CoverArtArchiveClient {
 
   private HttpGet getJsonGetRequest(CoverArtArchiveEntity entity, UUID mbid) {
     String url;
-    if (isUsingHttps) {
+    if (useHttps) {
       url = API_ROOT_HTTPS;
     } else {
       url = API_ROOT;

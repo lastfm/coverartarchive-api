@@ -44,7 +44,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import fm.last.musicbrainz.coverart.CoverArt;
 import fm.last.musicbrainz.coverart.CoverArtException;
-import fm.last.musicbrainz.coverart.impl.util.TestUtil;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultCoverArtArchiveClientTest {
@@ -63,9 +62,9 @@ public class DefaultCoverArtArchiveClientTest {
   @Before
   public void initialise() {
     httpGetCaptor = ArgumentCaptor.forClass(HttpGet.class);
-    // Use default constructor. Specific constructors are tested later on
-    client = new DefaultCoverArtArchiveClient();
-    TestUtil.setFinalField(client, "client", httpClient);
+    // Use regular HTTP calls for most tests; HTTPS is tested in a dedicated test
+    final boolean isHttps = false;
+    client = new DefaultCoverArtArchiveClient(isHttps, httpClient);
   }
 
   @Test
@@ -130,19 +129,22 @@ public class DefaultCoverArtArchiveClientTest {
   }
 
   @Test
-  public void doNotUseHttps() throws Exception {
-    client = new DefaultCoverArtArchiveClient(false);
-    TestUtil.setFinalField(client, "client", httpClient);
+  public void usesHttpByDefault() throws Exception {
+    client = new DefaultCoverArtArchiveClient();
+    assertThat(client.isUsingHttps(), is(false));
+  }
 
-    // Expect default behavior
-    mbidWithCoverArtReturnsCoverArt();
+  @Test
+  public void constructorControlsHttps() throws Exception {
+    client = new DefaultCoverArtArchiveClient(false);
+    assertThat(client.isUsingHttps(), is(false));
+    client = new DefaultCoverArtArchiveClient(true);
+    assertThat(client.isUsingHttps(), is(true));
   }
 
   @Test
   public void useHttps() throws Exception {
-    client = new DefaultCoverArtArchiveClient(true);
-    TestUtil.setFinalField(client, "client", httpClient);
-
+    client = new DefaultCoverArtArchiveClient(true, httpClient);
     mbidWithCoverArtReturnsCoverArt(API_ROOT_HTTPS);
   }
 
