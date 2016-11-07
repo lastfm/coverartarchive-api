@@ -40,6 +40,12 @@ public enum CoverArtType {
   /* */
   STICKER,
   /* */
-  OTHER;
+  OTHER,
+  /* */
+  POSTER,
+  /* */
+  WATERMARK,
+  /* */
+  LINER;
 
 }
