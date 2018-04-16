@@ -1,9 +1,0 @@
-TBA
-- Migrated project to lastfm-oss-parent.
-
-2.0.0 (2012-10-12)
-- Added new methods to CoverArt (getImageById, getFrontImage and getBackImage).
-- Changed return type of CoverArt#getImages to List as images in JSON response from CoverArtArchive are ordered.
-
-1.0.0 (2012-09-06)
-- Initial release. Provides access to cover art through the /release/{mbid}/ end point. 
