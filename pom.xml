@@ -10,7 +10,7 @@
   <groupId>fm.last</groupId>
   <artifactId>coverartarchive-api</artifactId>
   <packaging>jar</packaging>
-  <version>2.1.1</version>
+  <version>2.1.2-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <url>${project.scm.url}</url>
   <description>Java bindings for the MusicBrainz Cover Art Archive</description>
