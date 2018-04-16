@@ -22,20 +22,6 @@
     <url>https://github.com/lastfm/${project.artifactId}</url>
   </scm>
 
-  <developers>
-    <developer>
-      <name>Stefan Sperber</name>
-      <email>stefan.sperber@gmail.com</email>
-      <url>http://www.stefansperber.com</url>
-      <roles>
-        <role>Java Developer</role>
-        <role>Documentation</role>
-      </roles>
-      <organization>Last.fm</organization>
-      <organizationUrl>http://www.last.fm/</organizationUrl>
-    </developer>
-  </developers>
-
   <properties>
     <slf4jVersion>1.6.6</slf4jVersion>
   </properties>
