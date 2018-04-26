@@ -17,7 +17,7 @@ The recommended way of using `coverartarchive-api` is through Maven. Add the `co
       <version>2.1.1</version>
     </dependency>
 
-(Alternatively, a JAR file can be obtained from Maven Central: [fm.last:coverartarchive-api:2.1.1](http://search.maven.org/#artifactdetails%7Cfm.last%7Ccoverartarchive-api%7C2.1.0%7Cjar))
+(Alternatively, a JAR file can be obtained from Maven Central: [fm.last:coverartarchive-api:2.1.1](http://search.maven.org/#artifactdetails%7Cfm.last%7Ccoverartarchive-api%7C2.1.1%7Cjar))
 
 ## Usage example
 
