@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Upgraded `slf4j` to `1.7.36` (was `1.6.6`).
 - Upgraded `guava` to `19.0` (was `12.0`).
 - Upgraded `httpclient` to `4.5.13` (was `4.2.1`).
+- Upgraded `commons-io` to `2.11.0` (was `2.7`).
 
 ## [2.1.1] - 2018-04-26
 ### Added
