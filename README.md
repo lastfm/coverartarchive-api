@@ -65,7 +65,7 @@ All contributions are welcome. Please use the [Last.fm codeformatting profile](h
 
 ## License
 
-Copyright 2012-2018 [Last.fm](http://www.last.fm/)
+Copyright 2012-2022 [Last.fm](http://www.last.fm/)
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  
