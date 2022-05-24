@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - TBD
+### Changed
+- Upgraded `jackson` to `2.13.3` (was `2.0.5`).
+- Upgraded `slf4j` to `1.7.36` (was `1.6.6`).
+- Upgraded `guava` to `19.0` (was `12.0`).
+- Upgraded `httpclient` to `4.5.13` (was `4.2.1`).
+
 ## [2.1.1] - 2018-04-26
 ### Added
 - Add 3 missing cover art types - `poster`, `watermark` and `liner`.
