@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Last.fm
+ * Copyright (C) 2012-2022 Last.fm
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,4 +31,5 @@ class IsImageWithId implements Predicate<CoverArtImage> {
   public boolean apply(CoverArtImage coverArtImage) {
     return coverArtImage.getId() == id;
   }
+
 }
