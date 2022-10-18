@@ -21,7 +21,7 @@
   </scm>
 
   <properties>
-    <jackson.version>2.13.3</jackson.version>
+    <jackson.version>2.13.4</jackson.version>
     <license.maven.plugin.version>3.0</license.maven.plugin.version>
     <slf4j.version>1.7.36</slf4j.version>
   </properties>
