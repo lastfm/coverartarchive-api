@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.2.0] - TBD
 ### Changed
-- Upgraded `jackson` to `2.13.3` (was `2.0.5`).
+- Upgraded `jackson` to `2.13.4` (was `2.0.5`).
 - Upgraded `slf4j` to `1.7.36` (was `1.6.6`).
 - Upgraded `guava` to `19.0` (was `12.0`).
 - Upgraded `httpclient` to `4.5.13` (was `4.2.1`).
